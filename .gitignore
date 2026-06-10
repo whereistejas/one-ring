@@ -1,0 +1,30 @@
+# Dune build artifacts
+_build/
+
+# Local OPAM switch
+_opam/
+
+# Merlin / editor tooling
+.merlin
+.merlin-conf/
+
+# OCaml compiler artifacts
+*.annot
+*.cmi
+*.cmo
+*.cmx
+*.cma
+*.cmxa
+*.cmxs
+*.o
+*.a
+*.so
+
+# Coverage / test artifacts
+*.coverage
+bisect*.out
+
+# Logs and temporary files
+*.log
+*~
+.#*

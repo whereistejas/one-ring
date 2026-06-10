@@ -4,23 +4,19 @@
 
 (generate_opam_files true)
 
-(source
- (github username/reponame))
+(authors "The one-ring authors")
 
-(authors "Author Name <author@example.com>")
+(maintainers "The one-ring maintainers")
 
-(maintainers "Maintainer Name <maintainer@example.com>")
-
-(license LICENSE)
-
-(documentation https://url/to/documentation)
+(license LicenseRef-UNLICENSED)
 
 (package
  (name one-ring)
- (synopsis "A short synopsis")
- (description "A longer description")
- (depends ocaml)
+ (synopsis "An AI workflow engine for composing and orchestrating agents")
+ (description
+  "one-ring is an AI workflow engine for defining, composing, and orchestrating agent-driven workflows.")
+ (depends
+  (ocaml (>= 5.1))
+  yaml)
  (tags
-  ("add topics" "to describe" your project)))
-
-; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
+  (ai agents workflows orchestration)))

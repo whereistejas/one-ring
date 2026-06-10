@@ -1,0 +1,5 @@
+profile=default
+
+type-decl=sparse
+break-separators=after
+break-infix=fit-or-vertical
