@@ -45,7 +45,7 @@ let () =
       assert (List.length graph.nodes = 2);
       assert (List.length graph.edges = 1);
       let draft : node = List.nth graph.nodes 1 in
-      assert (List.map (fun (node : node) -> node.id) draft.deps = [ "gather-context" ]);
+      assert (draft.deps = [ "gather-context" ]);
       let edge = List.hd graph.edges in
       assert (String.equal edge.from "gather-context");
       assert (String.equal edge.to_ "draft-answer");
