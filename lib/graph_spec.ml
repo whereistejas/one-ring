@@ -19,6 +19,8 @@ type t = {
 
 type parse_error = string
 
+type cycle_status = Cyclic | Acyclic
+
 module Raw = struct
   type node = {
     id : string;
@@ -82,6 +84,22 @@ let resolve_graph (raw : Raw.t) =
       nodes
   in
   Ok { name = raw.name; nodes = List.map snd nodes; edges = raw.edges }
+
+let cycle_status (graph : t) =
+  let seen = Hashtbl.create (List.length graph.nodes) in
+  let rec visit (node : node) =
+    match Hashtbl.find_opt seen node.id with
+    | Some `Visiting -> true
+    | Some `Visited -> false
+    | None ->
+        Hashtbl.add seen node.id `Visiting;
+        let cyclic = List.exists visit node.deps in
+        Hashtbl.replace seen node.id `Visited;
+        cyclic
+  in
+  if List.exists visit graph.nodes then Cyclic else Acyclic
+
+let is_cyclic graph = cycle_status graph = Cyclic
 
 let of_yaml_value value =
   match Raw.of_yojson (yaml_to_yojson value) with

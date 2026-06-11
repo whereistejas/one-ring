@@ -30,6 +30,10 @@ Each entry in `nodes` defines a node in the workflow graph.
 - `result`: expected or computed node result.
 - `deps`: optional list of node IDs this node depends on. The parser resolves these IDs into `node list` values after scanning all declared nodes.
 
+## Cycles
+
+Graphs may be cyclic. Use `cycle_status` to classify a parsed graph as `Cyclic` or `Acyclic`, or `is_cyclic` for a boolean check.
+
 ## Edges
 
 Each entry in `edges` defines a directed relationship between two nodes.
