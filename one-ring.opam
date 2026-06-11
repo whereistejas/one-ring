@@ -9,7 +9,9 @@ tags: ["ai" "agents" "workflows" "orchestration"]
 depends: [
   "dune" {>= "3.23"}
   "ocaml" {>= "5.1"}
+  "ppx_deriving_yojson"
   "yaml"
+  "yojson"
   "odoc" {with-doc}
 ]
 build: [
