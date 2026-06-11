@@ -2,9 +2,8 @@ type node = {
   id : string;
   prompt : string;
   result : string;
-  deps : string list; [@default []]
+  mutable deps : node list;
 }
-[@@deriving yojson]
 
 type edge = {
   from : string;
@@ -17,9 +16,27 @@ type t = {
   nodes : node list;
   edges : edge list;
 }
-[@@deriving yojson]
 
 type parse_error = string
+
+module Raw = struct
+  type node = {
+    id : string;
+    prompt : string;
+    result : string;
+    deps : string list; [@default []]
+  }
+  [@@deriving yojson]
+
+  type t = {
+    name : string;
+    nodes : node list;
+    edges : edge list;
+  }
+  [@@deriving yojson]
+end
+
+let ( let* ) = Result.bind
 
 let rec yaml_to_yojson = function
   | `Null -> `Null
@@ -27,15 +44,48 @@ let rec yaml_to_yojson = function
   | `Float value -> `Float value
   | `String value -> `String value
   | `A values -> `List (List.map yaml_to_yojson values)
-  | `O fields ->
-      `Assoc
-        (List.map
-           (fun (key, value) -> (key, yaml_to_yojson value))
-           fields)
+  | `O fields -> `Assoc (List.map (fun (k, v) -> (k, yaml_to_yojson v)) fields)
+
+let map_result f values =
+  List.fold_right
+    (fun value acc ->
+      let* values = acc in
+      let* value = f value in
+      Ok (value :: values))
+    values (Ok [])
+
+let resolve_graph (raw : Raw.t) =
+  let table = Hashtbl.create (List.length raw.nodes) in
+  let nodes =
+    List.map
+      (fun (raw_node : Raw.node) ->
+        let node =
+          { id = raw_node.id; prompt = raw_node.prompt; result = raw_node.result; deps = [] }
+        in
+        Hashtbl.add table raw_node.id node;
+        (raw_node, node))
+      raw.nodes
+  in
+  let* _ =
+    map_result
+      (fun ((raw_node, node) : Raw.node * node) ->
+        let* deps =
+          map_result
+            (fun id ->
+              match Hashtbl.find_opt table id with
+              | Some node -> Ok node
+              | None -> Error ("unknown node dependency: " ^ id))
+            raw_node.deps
+        in
+        node.deps <- deps;
+        Ok ())
+      nodes
+  in
+  Ok { name = raw.name; nodes = List.map snd nodes; edges = raw.edges }
 
 let of_yaml_value value =
-  match of_yojson (yaml_to_yojson value) with
-  | Ok graph -> Ok graph
+  match Raw.of_yojson (yaml_to_yojson value) with
+  | Ok raw -> resolve_graph raw
   | Error message -> Error message
 
 let of_string yaml =

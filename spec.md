@@ -28,7 +28,7 @@ Each entry in `nodes` defines a node in the workflow graph.
 - `id`: unique node identifier.
 - `prompt`: prompt or instruction associated with the node.
 - `result`: expected or computed node result.
-- `deps`: optional list of node IDs this node depends on.
+- `deps`: optional list of node IDs this node depends on. The parser resolves these IDs into `node list` values after scanning all declared nodes.
 
 ## Edges
 
