@@ -28,7 +28,11 @@ Each entry in `nodes` defines a node in the workflow graph.
 - `id`: unique node identifier.
 - `prompt`: prompt or instruction associated with the node.
 - `result`: expected or computed node result.
-- `deps`: optional list of node IDs this node depends on.
+- `deps`: optional list of node IDs this node depends on. The parser validates that each dependency refers to a declared node.
+
+## Cycles
+
+Graphs may be cyclic. Use `cycle_status` to classify a parsed graph as `Cyclic` or `Acyclic`, or `is_cyclic` for a boolean check.
 
 ## Edges
 

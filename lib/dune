@@ -1,3 +1,5 @@
 (library
  (name one_ring)
- (libraries yaml))
+ (libraries yaml yojson)
+ (preprocess
+  (pps ppx_deriving_yojson)))

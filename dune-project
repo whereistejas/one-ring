@@ -17,6 +17,8 @@
   "one-ring is an AI workflow engine for defining, composing, and orchestrating agent-driven workflows.")
  (depends
   (ocaml (>= 5.1))
-  yaml)
+  ppx_deriving_yojson
+  yaml
+  yojson)
  (tags
   (ai agents workflows orchestration)))
