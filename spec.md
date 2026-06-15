@@ -30,12 +30,29 @@ Each entry in `nodes` defines a node in the workflow graph.
 - `result`: expected or computed node result.
 - `deps`: optional list of node IDs this node depends on.
 
+Node IDs must be unique across the graph, and every ID listed in `deps` must
+refer to a node declared in `nodes`. Parsing fails with a specific error
+otherwise.
+
 ## Edges
 
 Each entry in `edges` defines a directed relationship between two nodes.
 
 - `from`: source node ID.
 - `to`: destination node ID.
+
+Both `from` and `to` must refer to nodes declared in `nodes`.
+
+## Cycles
+
+Workflow graphs may be cyclic. Classifying a parsed graph reports either:
+
+- `Acyclic`, with a topological ordering of the nodes — every node ordered
+  after all of its dependencies; or
+- `Cyclic`, with a concrete cycle — a sequence of node IDs that forms a
+  dependency loop.
+
+`is_cyclic` is a boolean shortcut for callers that only need the verdict.
 
 ## Example
 
